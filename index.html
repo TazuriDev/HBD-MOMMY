@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Surprise!</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Dancing+Script:wght@700&display=swap"
+        rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    /* Updated to a darker, warmer rosy pink gradient to match your photo's tones */
+    body {
+        background: linear-gradient(135deg, #7a3248 0%, #4a1d2c 50%, #2e121b 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Poppins', sans-serif;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* --- EMOTIONAL BACKGROUND IMAGE OVERLAY --- */
+    .bg-photo {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('./images/image_2b6dec.jpg'); 
+        background-size: contain;        
+        background-position: center;     
+        background-repeat: no-repeat;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+        z-index: 1;
+    }
+
+    /* Blurred background helper matching the dark pink theme */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-image: url('./images/image_2b6dec.jpg');
+        background-size: cover;
+        background-position: center;
+        filter: blur(30px) brightness(0.4) saturate(1.2);
+        z-index: 0;
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+    }
+
+    /* Activate the blurred background when gift is opened */
+    body.active-bg::before {
+        opacity: 1;
+    }
+
+    /* Dark tint overlay tinted with deep berry tones */
+    .bg-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: linear-gradient(to bottom, rgba(46, 18, 27, 0.4), rgba(20, 8, 12, 0.7));
+        opacity: 0;
+        transition: opacity 2s ease-in-out;
+        z-index: 2;
+    }
+
+    .bg-photo.active, .bg-overlay.active {
+        opacity: 1;
+    }
+
+    /* --- FLOATING HEARTS ANIMATION --- */
+    .heart-particle {
+        position: absolute;
+        color: rgba(255, 182, 193, 0.85);
+        font-size: 20px;
+        pointer-events: none;
+        z-index: 3;
+        animation: floatUp 4s linear infinite;
+    }
+
+    @keyframes floatUp {
+        0% {
+            transform: translateY(100vh) scale(0.5);
+            opacity: 1;
+        }
+        100% {
+            transform: translateY(-10vh) scale(1.2);
+            opacity: 0;
+        }
+    }
+
+    /* --- CONTENT CONTAINER --- */
+    .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 500px;
+        padding: 20px;
+        z-index: 10;
+        position: relative;
+    }
+
+    h2 {
+        color: #ffffff;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+        transition: all 0.5s ease;
+        font-weight: 400;
+    }
+
+    /* --- GIFT BOX STYLES --- */
+    .gift-box {
+        font-size: 100px;
+        cursor: pointer;
+        animation: bounce 1.5s infinite;
+        user-select: none;
+        transition: transform 0.3s ease;
+        filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.4));
+    }
+
+    .gift-box:hover {
+        transform: scale(1.1);
+    }
+
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+        40% { transform: translateY(-20px); }
+        60% { transform: translateY(-10px); }
+    }
+
+    /* --- CAKE & CANDLES STYLES --- */
+    .cake-container {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 10px;
+        position: relative;
+    }
+
+    .cake-container::before {
+        content: '';
+        position: absolute;
+        width: 250px;
+        height: 250px;
+        background: radial-gradient(circle, rgba(255, 140, 160, 0.3) 0%, rgba(0, 0, 0, 0) 70%);
+        top: -20px;
+        z-index: 0;
+        border-radius: 50%;
+    }
+
+    .candles-group {
+        display: flex;
+        justify-content: space-around;
+        width: 170px;
+        margin-bottom: -2px;
+        z-index: 2;
+    }
+
+    .candle-wrapper {
+        padding: 10px 5px 0 5px;
+        cursor: pointer;
+    }
+
+    .candle {
+        width: 12px;
+        height: 40px;
+        background: repeating-linear-gradient(45deg, #fff, #fff 4px, #4fc3f7 4px, #4fc3f7 8px);
+        position: relative;
+        border-radius: 3px 3px 0 0;
+    }
+
+    .candle-wrapper:nth-child(even) .candle {
+        background: repeating-linear-gradient(45deg, #fff, #fff 4px, #ff4081 4px, #ff4081 8px);
+    }
+
+    .flame {
+        width: 14px;
+        height: 22px;
+        background: #ff9800;
+        border-radius: 50% 50% 20% 20%;
+        position: absolute;
+        top: -22px;
+        left: -1px;
+        box-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff9800;
+        animation: flicker 0.6s infinite alternate;
+        transition: opacity 0.3s ease;
+    }
+
+    @keyframes flicker {
+        0% { transform: scale(1); opacity: 0.9; }
+        100% { transform: scale(1.15); opacity: 1; }
+    }
+
+    .flame.out {
+        display: none;
+    }
+
+    .cake {
+        position: relative;
+        width: 210px;
+        height: 100px;
+        background: #f48fb1;
+        border-radius: 10px 10px 0 0;
+        box-shadow: inset 0 -10px 0 #ec407a, 0 10px 25px rgba(0, 0, 0, 0.5);
+        z-index: 1;
+    }
+
+    .cake::before {
+        content: '';
+        position: absolute;
+        top: -18px;
+        left: 0;
+        width: 100%;
+        height: 20px;
+        background: #fff;
+        border-radius: 10px 10px 0 0;
+    }
+
+    /* --- BUTTONS STYLES --- */
+    .btn-group {
+        display: none;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 25px;
+    }
+
+    .btn {
+        padding: 12px 24px;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        backdrop-filter: blur(5px);
+    }
+
+    .firework-btn {
+        background: rgba(255, 152, 0, 0.9);
+        box-shadow: 0 4px 15px rgba(255, 152, 0, 0.4);
+    }
+
+    .firework-btn:hover {
+        background: #f57c00;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(255, 152, 0, 0.6);
+    }
+
+    .next-btn {
+        background: rgba(216, 27, 96, 0.9);
+        box-shadow: 0 4px 15px rgba(216, 27, 96, 0.4);
+    }
+
+    .next-btn:hover {
+        background: #ad1457;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(216, 27, 96, 0.6);
+    }
+
+    .wish-message {
+        display: none;
+        font-family: 'Dancing Script', cursive;
+        font-size: 2.3rem;
+        color: #ffdde1;
+        text-shadow: 0 0 12px rgba(255, 105, 180, 0.8);
+        margin-top: 15px;
+    }
+</style>
+</head>
+
+<body>
+
+    <div class="bg-photo" id="bgPhoto"></div>
+    <div class="bg-overlay" id="bgOverlay"></div>
+
+    <div class="container">
+        <h2 id="instruction">Tap the gift to open your surprise!</h2>
+
+        <div class="gift-box" id="giftBox" onclick="openGift()">🎁</div>
+
+        <div class="cake-container" id="cakeContainer">
+            <div class="candles-group">
+                <div class="candle-wrapper" onclick="blowSingleCandle(this)">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="candle-wrapper" onclick="blowSingleCandle(this)">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="candle-wrapper" onclick="blowSingleCandle(this)">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="candle-wrapper" onclick="blowSingleCandle(this)">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+                <div class="candle-wrapper" onclick="blowSingleCandle(this)">
+                    <div class="candle">
+                        <div class="flame"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="cake"></div>
+        </div>
+
+        <div class="wish-message" id="wishMessage">Make a wish! ✨</div>
+
+        <div class="btn-group" id="btnGroup">
+            <button class="btn firework-btn" onclick="triggerFireworks()">Press Here for more Confetti!</button>
+            <a href="main.html" class="btn next-btn">Continue to Your Card ❤️</a>
+        </div>
+    </div>
+
+    <script>
+        let unlitCount = 0;
+        const totalCandles = 5;
+
+        function openGift() {
+            document.getElementById('giftBox').style.display = 'none';
+            document.getElementById('instruction').textContent = 'Make a wish and tap each candle flame to blow them out one by one!';
+            document.getElementById('cakeContainer').style.display = 'flex';
+            document.getElementById('wishMessage').style.display = 'block';
+
+            // Activate background photo and emotional dark overlay
+            document.getElementById('bgPhoto').classList.add('active');
+            document.getElementById('bgOverlay').classList.add('active');
+
+            // Start spawning floating hearts
+            setInterval(createFloatingHeart, 600);
+        }
+
+        function createFloatingHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-particle');
+            heart.innerHTML = '💖';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+
+        function blowSingleCandle(wrapper) {
+            const flame = wrapper.querySelector('.flame');
+
+            if (flame && !flame.classList.contains('out')) {
+                flame.classList.add('out');
+                unlitCount++;
+
+                if (unlitCount === totalCandles) {
+                    document.getElementById('instruction').textContent = 'May all your wishes come true! 💖';
+                    document.getElementById('wishMessage').textContent = '🎉 Happy Birthday! 🎉';
+                    document.getElementById('btnGroup').style.display = 'flex';
+
+                    // Trigger grand celebratory fireworks
+                    triggerGrandFireworks();
+                }
+            }
+        }
+
+        function triggerFireworks() {
+            confetti({
+                particleCount: 80,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+
+        function triggerGrandFireworks() {
+            const duration = 3.5 * 1000;
+            const animationEnd = Date.now() + duration;
+            const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 20 };
+
+            function randomInRange(min, max) {
+                return Math.random() * (max - min) + min;
+            }
+
+            const interval = setInterval(function () {
+                const timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                const particleCount = 50 * (timeLeft / duration);
+
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 }
+                }));
+                confetti(Object.assign({}, defaults, {
+                    particleCount,
+                    origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 }
+                }));
+            }, 250);
+        }
+    </script>
+</body>
+
+</html>
