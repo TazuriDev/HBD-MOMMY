@@ -983,7 +983,7 @@ body {
     z-index: 10000000000000000;
 }
 
-/* --- MOBILE RESPONSIVE MEDIA QUERY --- */
+/* --- MOBILE RESPONSIVE MEDIA QUERY (FIXED) --- */
 @media screen and (max-width: 658px) {
     .flag__birthday .flag__left {
         transform: rotate(-10deg) translate(-119px,3px);
@@ -1144,29 +1144,54 @@ body {
         width: 76px !important;
     }
 
-    /* Mail modal mobile viewport fix */
+    /* --- MOBILE 3D CARD FIX --- */
     .boxMail .boxMail-container {
-        width: 90vw !important;
-        height: 380px !important;
-        transform: translateX(18%) scale(0.85);
+        width: 92vw !important;
+        max-width: 360px !important;
+        height: 480px !important;
+        transform: scale(0.9) !important;
+        left: 50% !important;
+        top: 50% !important;
+        margin-left: -46vw !important;
+        margin-top: -240px !important;
+    }
+
+    .boxMail .boxMail-container .card1,
+    .boxMail .boxMail-container .card2 {
+        width: 50% !important;
+        height: 100% !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none;
+    }
+
+    .boxMail .boxMail-container .card2 {
+        left: 50% !important;
     }
 
     .boxMail .boxMail-container:hover {
-        transform: translateX(18%) scale(0.85) rotate(-3deg);
+        transform: scale(0.85) !important;
+        filter: drop-shadow(0 0 10px #FF7882);
     }
 
     .boxMail .boxMail-container:hover .card1 {
-        transform: rotateY(-180deg);
+        transform: rotateY(-140deg) !important;
+    }
+
+    .boxMail .boxMail-container .card1 h3 {
+        font-size: 22px !important;
+        letter-spacing: 2px !important;
     }
 
     .boxMail .boxMail-container .card2 h2 {
-        font-size: 13px !important;
-        line-height: 1.3 !important;
-        padding: 0 10px !important;
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+        padding: 0 5px !important;
+        text-indent: 5px !important;
     }
 
     .boxMail .boxMail-container .card2 h3 {
-        font-size: 18px !important;
-        padding: 10px 0px 5px 30px !important;
+        font-size: 16px !important;
+        padding: 10px 0 5px 15px !important;
     }
 }
